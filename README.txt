@@ -8,3 +8,9 @@ Prepare like this:
 
 3. open PowerShell or CMD prompt and install Scrapy with:
    'conda install -c conda-forge scrapy'
+
+
+
+Create new Scrapy projects from the command line at your desired forlder with:
+>scrapy startproject <template>
+(C:\Users\%USERNAME%\Anaconda3\Lib\site-packages\scrapy\templates)

@@ -1,0 +1,225 @@
+\documentclass{beamer}
+%\usepackage{lmodern}
+\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{listings}
+
+% lstlisting-Einstellungen
+\lstset{
+	language=Python,
+	morekeywords = {yield},
+	basicstyle=\ttfamily,
+	keywordstyle=\color{blue}\ttfamily,
+	stringstyle=\color{red}\ttfamily,
+	commentstyle=\color{green}\ttfamily,
+	morecomment=[l][\color{magenta}]{\#},
+	% wegen Leerzeichen-Anzeige	
+	showstringspaces=false,
+	% wegen Character-Spacing
+	columns=fullflexible,	
+}
+
+% auto-nummerierung bei framebreaks
+\setbeamertemplate{frametitle continuation}{(\insertcontinuationcount)}
+
+% etwas nach links
+\setlength{\leftmargini}{1em}
+
+\title{Scrapy}
+\subtitle{A Fast and Powerful Scraping and Web Crawling Framework}
+\author{LdPx, lammbraten, foobar999}
+\subject{Computer Science}
+
+\begin{document}
+
+\frame{\titlepage}
+\begin{frame}
+	\frametitle{Übersicht}
+	\tableofcontents
+\end{frame}
+\section{Allgemeines}
+\begin{frame}
+	\frametitle{\insertsection}
+	\begin{itemize}
+		\item  Framework für Python
+		\item  Crawlen von Websites
+		\item  Extraktion strukturierter Daten
+		\item  Definition Scraping...
+	\end{itemize} 
+\end{frame}
+
+\section{Installation}
+% fragile nötig für listings
+\begin{frame}[fragile]
+	\frametitle{\insertsection}
+	\begin{itemize}
+		\item mit pip (erfordert vorhandene Python-Installation):
+			\begin{lstlisting}
+pip3 install scrapy
+			\end{lstlisting}
+		\item mit anaconda (in Windows einfacher, da numpy, etc... bereits enthalten):
+			\begin{lstlisting}
+conda install -c conda-forge scrapy
+			\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+\section{Projekt anlegen}
+\begin{frame}[fragile]
+	\frametitle{\insertsection}
+	\begin{itemize}
+		\item Verzeichnisstruktur erzeugen:
+			\begin{lstlisting}
+scrapy startproject mynewproject
+			\end{lstlisting}
+		\item erzeugt ein gleichnamiges Verzeichnis \verb|./mynewproject| 
+		\item künftige Spider werden in \verb|./mynewproject/spiders| angelegt
+		\item Konfiguration erfolgt über \verb|./mynewproject/settings.py|
+	\end{itemize}
+\end{frame}
+
+\section{Spider}
+\begin{frame}[fragile]
+	\frametitle{\insertsection}
+	\begin{itemize}
+		\item spezielle Klassen in Scrapy-Projekten
+		\item von Klasse \verb|scrapy.Spider| abgeleitet
+		\item führen Crawling durch, spezifisch für Websites programmierbar
+		\item Ablauf: \begin{enumerate}		
+			\item Spider schickt Requests an initiale URLs
+			\item scrapy ruft je Response Callback-Methode auf, mit Inhalt als Parameter
+			\item Callback-Methode startet ggf. Requests an weitere URLs
+			\item Callback-Methode extrahiert Daten des Response und gibt sie zurück
+			\item scrapy sammelt alle zurückgegebenen Daten ein, und speichert sie z.B. in einer Datei
+		\end{enumerate}
+	\end{itemize}
+\end{frame}
+\begin{frame}[fragile,allowframebreaks]
+	\frametitle{einfacher Beispielspider}
+			\begin{lstlisting}
+import scrapy
+
+class SimpleSpider(scrapy.Spider):
+    name = 'simplespider'
+    start_urls = ['http://supersimpleloremipsum.com/']
+
+    def parse(self, response):
+        self.logger.info('parsing {}'.format(response))
+        yield {'status': response.status}
+			\end{lstlisting}
+			
+	\framebreak
+	
+	\begin{itemize}
+		\item \lstinline|name| identifiziert den Spider eindeutig im Projekt
+		\item \lstinline|start_urls| beinhaltet die URLs für die initialen Requests
+		\item \lstinline|parse()| wird als Callback aufgerufen, der Parameter \lstinline|response| enthält das Ergebnis des Response
+		\item die Methode erzeugt eine Logging-Ausgabe von \lstinline|response| 
+		\item die Methode übergibt scrapy das Parsingergebnis den HTTP-Statuscode als \lstinline|dict|
+	\end{itemize}
+	
+	\framebreak
+	
+	\begin{itemize}
+		\item das Crawling mit Spider \lstinline|simplespider| wird über einen eigenen Befehl in der Kommandozeile gestartet:
+			\begin{lstlisting}
+scrapy crawl simplespider -o res.json
+			\end{lstlisting}
+		\item scrapy speichert die per \lstinline|yield| zurückgegebenen Daten in der Datei \lstinline|res.json| (das Dateiformat ergibt sich aus Suffix) \begin{itemize}
+			\item scrapy unterstützt neben json weitere Formate: xml, csv, ... 
+			\item beachte: scrapy leert bei mehrfachem Start des Crawlingbefehls die Datei nicht, sondern hängt die Daten hinten dran
+		\end{itemize}
+		\item Befehl auch über Pythonskript aufrufbar: \begin{lstlisting}
+def main():
+  cmd = 'scrapy crawl iter -o res.json'
+  scrapy.cmdline.execute(cmd.split())
+main()		
+		\end{lstlisting}
+		\item API zum Crawlen: Fehlanzeige ?
+	\end{itemize}
+\end{frame}
+
+\section{Extraktion von Daten}
+\begin{frame}[fragile,allowframebreaks]
+	\frametitle{\insertsection{}}
+	\begin{lstlisting}[breaklines=true]
+def parse(self, resp):
+  res1 = resp.css('div small')
+  #[<Selector data='<small...">'>, <Selector data='<small...">'>, ...]
+  res2 = resp.css('div small::text')
+  #[<Selector data='Albert Einstein'>, <Selector data='J.K. Rowling'>, ...]
+  res3 = resp.css('div small::text').extract()
+  #['Albert Einstein', 'J.K. Rowling', ...]
+  res4 = resp.css('div small::text').extract_first()
+  #Albert Einstein
+  ...
+	\end{lstlisting}
+	
+	\framebreak
+	
+	\begin{itemize}
+		\item \lstinline|resp.css('div small')| selektiert mehrere Elemente im DOM mit dem CSS-Selektor \lstinline|'div small'| (d.h. es findet alle \lstinline|<small>|-Elemente innerhalb von \lstinline|<div>|-Elementen)
+		\item \lstinline|resp.css('div small::text')| selektiert den Text innerhalb jedes gefundenen \lstinline|<small>...</small>|-Tags
+		\item \lstinline|resp.css('div small::text').extract()| liefert die selektierten Texte als Liste von Python-Strings
+		\item \lstinline|resp.css('div small::text').extract_first()| liefert den 1. Treffer davon
+	\end{itemize}
+	
+	\framebreak
+	
+	\begin{itemize}
+		\item das Ergebnis einer Selektion kann selbst wieder zum Selektieren genutzt werden
+		\item folgendes Beispiel selektiert alle Zitate einer Website, und gibt je Zitat als Datensatz Autor und Wortlaut zurück:
+	\begin{lstlisting}
+def parse(self, response):
+  quotes = response.css('div.quote')
+  for q in quotes:
+    yield {
+      'author': q.css('.author::text').extract_first(),
+      'text': q.css('.text::text').extract_first()
+    }
+	\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+\section{Links folgen}
+\begin{frame}[fragile,allowframebreaks]
+	\frametitle{\insertsection{}}
+	\begin{lstlisting}
+def parse(self, response):
+  for q in response.css('div.quote'):
+    yield {
+      'text': q.css('.text::text').extract_first(),
+      'author': q.css('.author::text').extract_first()
+    }
+  a_selector = 'li.next a::attr(href)'
+  hrefs = response.css(a_selector).extract()  
+  for href in hrefs:    
+    yield response.follow(href, callback=self.parse)
+	\end{lstlisting}
+	\begin{itemize}
+		\item die Methode liefert zunächst von den Zitaten Autor und Wortlaut
+		\item danach sucht sie alle passenden \lstinline|<a href=...>|-Elemente und selektiert je Treffer das \lstinline|href|-Attribut mit \lstinline|'a::attr(href)'| 
+		
+		\framebreak
+		
+		\item zuletzt extrahiert die Methode die enthaltenen URLs und untersucht sie rekursiv mit \lstinline|response.follow(href, callback=self.parse)| 
+		\item scrapy merkt sich außerdem intern schon besuchte URLs und vermeidet so mögliche Endlosrekursionen durch wechselseitige URL-Verweise
+	\end{itemize}
+\end{frame}
+
+\section{Quellen}
+\begin{frame}
+	\frametitle{\insertsection{}}
+	% lustiges welt-icon
+	\emergencystretch 1.5em
+	\setbeamertemplate{bibliography item}{\insertbiblabel}
+	{\small
+	\begin{thebibliography}{8}
+		\bibitem{scrapy tu}\url{https://doc.scrapy.org/en/latest/intro/tutorial.html}
+		\bibitem{scrapy ins}\url{https://doc.scrapy.org/en/latest/intro/install.html}
+		\bibitem{scrapy sp}\url{https://doc.scrapy.org/en/latest/topics/spiders.html}
+	\end{thebibliography}
+	}
+\end{frame}
+	
+\end{document}

@@ -104,6 +104,9 @@ ENV/
 ############################
 #Eclipse Specific GitIgnore#
 ############################
+# CDT-specific
+.cproject
+
 *.pydevproject
 .project
 .metadata
@@ -119,5 +122,12 @@ local.properties
 .settings/
 .loadpath
 
-# CDT-specific
-.cproject
+# TeXlipse-specific
+*.aux
+*.nav
+*.out
+# *.pdf	# ?
+*.snm
+*.synctex.gz
+*.toc
+*.vrb

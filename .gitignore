@@ -126,8 +126,8 @@ local.properties
 *.aux
 *.nav
 *.out
-# *.pdf	# ?
 *.snm
 *.synctex.gz
 *.toc
 *.vrb
+/scrapy_latex.pdf	# ?

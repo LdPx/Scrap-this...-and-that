@@ -163,8 +163,23 @@ def parse(self, resp):
 	
 	\framebreak
 	
+	
+	\begin{wrapfigure}{\textwidth}
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{texsrc/HTML_inspect_A}
+		\end{center}
+		\vspace{-10pt}
+		\caption{Bla Bla Bla Mr. Freeman, Caption.} 
+		\label{fig:HTML_Inspect_selection}
+	\end{wrapfigure}
+
+	
+	
+	\framebreak
+	
 	\begin{itemize}
-		\item \lstinline|resp.css('div small')| selektiert mehrere Elemente im DOM mit dem CSS-Selektor \lstinline|'div small'| (d.h. es findet alle \lstinline|<small>|-Elemente innerhalb von \lstinline|<div>|-Elementen)
+		\item \lstinline|resp.css('div small')| selektiert mehrere Elemente im DOM
+		mit dem CSS-Selektor \lstinline|'div small'| (d.h. es findet alle \lstinline|<small>|-Elemente innerhalb von \lstinline|<div>|-Elementen)
 		\item \lstinline|resp.css('div small::text')| selektiert den Text innerhalb jedes gefundenen \lstinline|<small>...</small>|-Tags
 		\item \lstinline|resp.css('div small::text').extract()| liefert die selektierten Texte als Liste von Python-Strings
 		\item \lstinline|resp.css('div small::text').extract_first()| liefert den 1. Treffer davon
@@ -186,6 +201,8 @@ def parse(self, response):
 	\end{lstlisting}
 	\end{itemize}
 \end{frame}
+
+
 
 \section{Links folgen}
 \begin{frame}[fragile,allowframebreaks]

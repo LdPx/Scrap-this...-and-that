@@ -1,10 +1,10 @@
-import scrapy
+﻿import scrapy
 from pprint import pformat
 from urllib.parse import urlparse
 from collections import Counter, OrderedDict
 
 # beachte: ab 'https://blog.fefe.de/?mon=200806' kein body
-# beachte: z�hlz akt.Monat alles doppelt, wenn 'https://blog.fefe.de' Ausgangspunkt
+# beachte: zählz akt.Monat alles doppelt, wenn 'https://blog.fefe.de' Ausgangspunkt
 
 class FefeRantSpider(scrapy.Spider):
     

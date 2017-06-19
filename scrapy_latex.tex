@@ -148,7 +148,21 @@ main()
 \section{Extraktion von Daten}
 \begin{frame}[fragile,allowframebreaks]
 	\frametitle{\insertsection{}}
-	\begin{lstlisting}[breaklines=true]
+	\begin{lstlisting}[basicstyle=\footnotesize]
+<div class="quote">
+    <span class="text">"The world as we have..."</span>
+    <small class="author">Albert Einstein</small>
+</div>
+<div class="quote">
+    <span class="text">"It is our choices,..."</span>
+    <small class="author">J.K. Rowling</small>
+</div>
+...
+	\end{lstlisting}
+
+	%\framebreak
+	
+	\begin{lstlisting}[breaklines=true,basicstyle=\footnotesize]
 def parse(self, resp):
   res1 = resp.css('div small')
   #[<Selector data='<small...">'>, <Selector data='<small...">'>, ...]
@@ -158,11 +172,9 @@ def parse(self, resp):
   #['Albert Einstein', 'J.K. Rowling', ...]
   res4 = resp.css('div small::text').extract_first()
   #Albert Einstein
-  ...
 	\end{lstlisting}
 	
 	\framebreak
-	
 	
 	\begin{wrapfigure}{\textwidth}
 		\begin{center}
@@ -172,7 +184,6 @@ def parse(self, resp):
 		\caption{Bla Bla Bla Mr. Freeman, Caption.} 
 		\label{fig:HTML_Inspect_selection}
 	\end{wrapfigure}
-
 	
 	
 	\framebreak

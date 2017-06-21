@@ -130,5 +130,6 @@ local.properties
 *.synctex.gz
 *.toc
 *.vrb
+*.pdf
 scrapy_latex.pdf	# ?
 /scrapy_latex.pdf	# ?

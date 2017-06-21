@@ -10,7 +10,7 @@ from tutorial.spiders.c_pull_spider import CSpider
 
 if __name__ == '__main__':
 #    logging.getLogger('scrapy').setLevel(logging.CRITICAL) # ???
-#    logging.getLogger('scrapy').propagate = False
+    logging.getLogger('scrapy').propagate = False
     
     print("Hello. My Name is scraper.")
     
@@ -27,7 +27,7 @@ if __name__ == '__main__':
 #    process.crawl(BlogSpider)
 #    process.start() # script blocks here until crawling is finished
     
-    time.sleep(5)
+#    time.sleep(5)
     print("Bye. My Name was scraper.")
     
     

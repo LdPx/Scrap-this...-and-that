@@ -17,30 +17,31 @@ class CSpider(scrapy.Spider):
         print("jojojo")
 
     def parse(self, response):
-        for quote in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'):   # selecting all entries
-            print(quote.css('.h3.u-block::text').extract_first().split(' ', 1)[0])  # selecting only the elements inside the previous selection    # extract_first() or else a list with one item would be returned
+        for offer in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'):   # selecting all entries
+            #print(offer.css('.h3.u-block::text').extract_first().split(' ', 1)[0])  # selecting only the elements inside the previous selection    # extract_first() or else a list with one item would be returned
 
             # TODO extract information for the current item from a sub-page
-            details_link = quote.css('a::attr(href)').extract_first()
+            details_link = offer.css('a::attr(href)').extract_first()
+            details_link = offer.css('a::attr(href)').extract_first()
             scrapy.Request(url=details_link, callback=self.parsed_detailes)
+            print(details_link)
             
             #.css('#rbt-damageCondition-v').extract_first()
 
             yield {
-#                'full': quote.css('.h3.u-text-break-word::text').extract_first(),
-#                'brand': quote.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[0],
-#                'name': quote.css('.h3.u-text-break-word::text').extract_first().split(' ', 2)[1],
-#                'name-all': quote.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[1],
-#                'price': quote.css('.h3.u-block::text').extract_first().split(' ', 1)[0],    # excludes the € sign
+#                'full': offer.css('.h3.u-text-break-word::text').extract_first(),
+#                'brand': offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[0],
+#                'name': offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 2)[1],
+#                'name-all': offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[1],
+#                'price': offer.css('.h3.u-block::text').extract_first().split(' ', 1)[0],    # excludes the € sign
 
-                'text': quote.css('.h3.u-text-break-word').extract_first(),
+                'text': offer.css('.h3.u-text-break-word').extract_first(),
             }
             
             # TODO next page
-#            next_page = response.css('li.next a::attr(href)').extract_first()
-#            if next_page is not None:
-#                next_page = response.urljoin(next_page)
-#                yield scrapy.Request(next_page, callback=self.parse)
+            if details_link is not None:
+                details_link = response.urljoin(details_link)
+                yield scrapy.Request(details_link, callback=self.parsed_detailes)
             
             
             

@@ -257,13 +257,9 @@ def parse(self, response):
 		\framebreak
 		
 		\item zuletzt extrahiert die Methode die enthaltenen URLs und untersucht sie rekursiv mit \lstinline|response.follow(href, callback=self.parse)| 
-		\item scrapy merkt sich außerdem intern schon besuchte URLs und vermeidet so mögliche Endlosrekursionen durch wechselseitige URL-Verweise
-		
-		TODO: Stuff
-		
-		Fingerprint
-		
-		Moar
+		\item scrapy speichert intern fingerprints von besuchten URLs zur Vermeidung von ``crawling loops'' \begin{itemize}
+			\item Verhalten über \lstinline|DUPEFILTER_CLASS| in Konfigurationsdatei änderbar
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -317,6 +313,7 @@ Vielleicht!
 		\bibitem{scrapy tu}\url{https://doc.scrapy.org/en/latest/intro/tutorial.html}
 		\bibitem{scrapy ins}\url{https://doc.scrapy.org/en/latest/intro/install.html}
 		\bibitem{scrapy sp}\url{https://doc.scrapy.org/en/latest/topics/spiders.html}
+		\bibitem{scrapy set}\url{https://doc.scrapy.org/en/latest/topics/settings.html}
 	\end{thebibliography}
 	}
 \end{frame}

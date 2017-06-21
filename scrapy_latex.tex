@@ -293,10 +293,27 @@ def parse(self, response):
 	$\rightarrow$ Texte befreien! und\ldots ja was eigentlich :?
 \end{frame}
 
-\subsection{Link-counter}
-\begin{frame}
+
+
+\subsection{Linkcounter}
+\begin{frame}[fragile]
 	\frametitle{\insertsection{}: \insertsubsection{}}
-	$\rightarrow$ Zählen Zählen Zählen!
+	\begin{itemize}
+		\item erstellen Sie einen Scrapy-Spider, der alle Vorkommen von in Fefes Blog verlinkten Domains zählt: \begin{itemize}
+			\item der Spider soll in der Ausgabedatei (beliebiges Format) eine Datenstruktur als Dictionary anlegen: \begin{lstlisting} 
+{
+  "www.spiegel.de": 1234,
+  "www.heise.de": 567,
+  ...
+}
+			\end{lstlisting}
+		\item eine Unterscheidung von \lstinline|"www.spiegel.de"| und \lstinline|"spiegel.de"| muss hier nicht vorgenommen werden (d.h. 2 Einträge sind ok)
+		\item der Hostname eines Links kann z.B. mithilfe der Funktion \lstinline|urlparse| aus dem Modul \lstinline|urllib.parse| bestimmt werden
+		\item nur die Links aus eigentlichen Inhalten (d.h. kein Impressum, FAQ o.Ä.) sollen mitgezählt werden
+		\item die Einträge sollen absteigend sortiert sein
+		\item die [l]-Links sollen nicht mitgezählt werden????
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 

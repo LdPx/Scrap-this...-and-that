@@ -86,6 +86,9 @@ scrapy startproject mynewproject
 		\item erzeugt ein gleichnamiges Verzeichnis \verb|./mynewproject| 
 		\item künftige Spider werden in \verb|./mynewproject/spiders| angelegt
 		\item Konfiguration erfolgt über \verb|./mynewproject/settings.py|
+		\begin{itemize}
+		  \item ermöglicht z.B. Konfiguration der Beachtung von \lstinline|robots.txt|
+  		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -107,14 +110,14 @@ scrapy startproject mynewproject
 \end{frame}
 
 \begin{frame}[fragile]
-	\frametitle{Spider ?}	
+	\frametitle{Spider?}	
 	\begin{figure}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{texsrc/Spider_cute}
 		\end{center}
 		%\vspace{-10pt}
-		\caption{Funfact: Spinne ist im Volksmund ein Synonym für Tiere aus der Gruppe
-		der Arachnide - kleine Tiere mit acht Beinen, welche Insekten mit Netzen oder
+		\caption{Spider! Funfact: Spinne ist im Volksmund ein Synonym für Tiere aus
+		der Gruppe der Arachnide - kleine Tiere mit acht Beinen, welche Insekten mit Netzen oder
 		anderen Fallen fangen.}
 		\label{fig:Spider}
 	\end{figure}
@@ -299,7 +302,8 @@ def parse(self, response):
 \begin{frame}[fragile]
 	\frametitle{\insertsection{}: \insertsubsection{}}
 	\begin{itemize}
-		\item erstellen Sie einen Scrapy-Spider, der alle Vorkommen von in Fefes Blog verlinkten Domains zählt: \begin{itemize}
+		\item Erstellung eines Scrapy-Spiders, der alle Vorkommen von in Fefes Blog
+		verlinkten Domains zählt: \begin{itemize}
 			\item der Spider soll in der Ausgabedatei (beliebiges Format) eine Datenstruktur als Dictionary anlegen: \begin{lstlisting} 
 {
   "www.spiegel.de": 1234,
@@ -309,9 +313,9 @@ def parse(self, response):
 			\end{lstlisting}
 		\item eine Unterscheidung von \lstinline|"www.spiegel.de"| und \lstinline|"spiegel.de"| muss hier nicht vorgenommen werden (d.h. 2 Einträge sind ok)
 		\item der Hostname eines Links kann z.B. mithilfe der Funktion \lstinline|urlparse| aus dem Modul \lstinline|urllib.parse| bestimmt werden
-		\item nur die Links aus eigentlichen Inhalten (d.h. kein Impressum, FAQ o.Ä.) sollen mitgezählt werden
+		\item nur die Links aus eigentlichen Inhalten (d.h. kein Impressum, FAQ,
+		[l]-Links o.Ä.) sollen gezählt werden
 		\item die Einträge sollen absteigend sortiert sein
-		\item die [l]-Links sollen nicht mitgezählt werden????
 		\end{itemize}
 	\end{itemize}
 \end{frame}
@@ -320,15 +324,20 @@ def parse(self, response):
 \section{Fazit}
 \begin{frame}
 	\frametitle{\insertsection{}}
-Ist Scrapy toll?
-
-Vielleicht!
+	\begin{itemize}
+	  \item Datenzugriff mithilfe von CSS möglich $\rightarrow$ für uns weniger
+	  neues zu lernen
+	  \item Python Framework - BAD $\rightarrow$ kein $R$ - GOOD
+	  \item Async - nicht einfach in Rahmenprogramm einzubetten, nicht dokumentiert
+	  \item Spiderinterface sehr einfach
+	  \item Viel automatisiert - Doppelte links
+	  \item Scrap it all!!!
+	\end{itemize}
 \end{frame}
 
 \section{Quellen}
 \begin{frame}
 	\frametitle{\insertsection{}}
-	% lustiges welt-icon
 	\emergencystretch 1.5em
 	\setbeamertemplate{bibliography item}{\insertbiblabel}
 	{\small

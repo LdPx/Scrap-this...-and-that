@@ -107,14 +107,14 @@ scrapy startproject mynewproject
 \end{frame}
 
 \begin{frame}[fragile]
-	\frametitle{Spider ?}	
+	\frametitle{Spider!}	
 	\begin{figure}
 		\begin{center}
 			\includegraphics[width=0.6\textwidth]{texsrc/Spider_cute}
 		\end{center}
 		%\vspace{-10pt}
-		\caption{Funfact: Spinne ist im Volksmund ein Synonym für Tiere aus der Gruppe
-		der Arachnide - kleine Tiere mit acht Beinen, welche Insekten mit Netzen oder
+		\caption{Spider! Funfact: Spinne ist im Volksmund ein Synonym für Tiere aus
+		der Gruppe der Arachnide - kleine Tiere mit acht Beinen, welche Insekten mit Netzen oder
 		anderen Fallen fangen.}
 		\label{fig:Spider}
 	\end{figure}
@@ -272,10 +272,33 @@ def parse(self, response):
 
 \section{Übung}
 
-\subsection{Emails - Skynet kann das!}
-\begin{frame}
+\subsection{Emails farmen\ldots}
+\begin{frame}[fragile]
 	\frametitle{\insertsection{}: \insertsubsection{}}
-	$\rightarrow$ TO.BE.DONE!
+	\begin{itemize}
+		\item In der ersten Übung wollen wir uns zunächst mit einigen Befehlen von
+		Scrapy in der Shell vertraut machen.
+		\item Die Aufgabe besteht darin die E-mails der HSNR-Dozenten von der
+		offiziellen Homepage zu crawlen.
+		\begin{itemize}
+			\item Dazu müssen wir scrapy zunächst mitteilen, mit welcher Website wir
+			arbeiten wollen: 
+
+			\begin{lstlisting}  
+scrapy shell 'https://www.hs-niederrhein.de/
+elektrotechnik-informatik/personen/'
+			\end{lstlisting}
+			
+			bzw. unter Windows:
+			
+			\begin{lstlisting}  
+scrapy shell "https://www.hs-niederrhein.de/
+elektrotechnik-informatik/personen/"
+			\end{lstlisting}
+						
+
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 \framebreak

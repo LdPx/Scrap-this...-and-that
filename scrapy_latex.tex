@@ -275,10 +275,33 @@ def parse(self, response):
 
 \section{Übung}
 
-\subsection{Emails - Skynet kann das!}
-\begin{frame}
+\subsection{Emails farmen\ldots}
+\begin{frame}[fragile]
 	\frametitle{\insertsection{}: \insertsubsection{}}
-	$\rightarrow$ TO.BE.DONE!
+	\begin{itemize}
+		\item In der ersten Übung wollen wir uns zunächst mit einigen Befehlen von
+		Scrapy in der Shell vertraut machen.
+		\item Die Aufgabe besteht darin die E-mails der HSNR-Dozenten von der
+		offiziellen Homepage zu crawlen.
+		\begin{itemize}
+			\item Dazu müssen wir scrapy zunächst mitteilen, mit welcher Website wir
+			arbeiten wollen: 
+
+			\begin{lstlisting}  
+scrapy shell 'https://www.hs-niederrhein.de/
+elektrotechnik-informatik/personen/'
+			\end{lstlisting}
+			
+			bzw. unter Windows:
+			
+			\begin{lstlisting}  
+scrapy shell "https://www.hs-niederrhein.de/
+elektrotechnik-informatik/personen/"
+			\end{lstlisting}
+						
+
+		\end{itemize}
+	\end{itemize}
 \end{frame}
 
 \framebreak

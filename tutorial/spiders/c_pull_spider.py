@@ -41,6 +41,8 @@ class CSpider(scrapy.Spider):
             
             # TODO next page
             details_link = response.urljoin(details_link)
+            #response.follow(last_month_link, callback=self.parse)
+            
             request = scrapy.Request(details_link, callback=self.parsed_detailes)
             request.meta['name-all'] = offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[1]
             request.meta['price'] = offer.css('.h3.u-block::text').extract_first().split(' ', 1)[0]

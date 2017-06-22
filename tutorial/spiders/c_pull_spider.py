@@ -1,5 +1,6 @@
 import scrapy
 import logging
+import pprint
 from pprint import pformat
 from urllib.parse import urlparse
 from collections import Counter, OrderedDict
@@ -14,7 +15,7 @@ class CSpider(scrapy.Spider):
 
     def parsed_detailes(self, response):
         logging.getLogger('scrapy').critical("---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------")
-        print("jojojo")
+        pprint.pprint(response.meta)
 
     def parse(self, response):
         for offer in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'):   # selecting all entries
@@ -33,15 +34,18 @@ class CSpider(scrapy.Spider):
 #                'brand': offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[0],
 #                'name': offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 2)[1],
 #                'name-all': offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[1],
-#                'price': offer.css('.h3.u-block::text').extract_first().split(' ', 1)[0],    # excludes the € sign
+#                'price': offer.css('.h3.u-block::text').extract_first().split(' ', 1)[0],    # excludes the € sign - includes '.'
 
                 'text': offer.css('.h3.u-text-break-word').extract_first(),
             }
             
             # TODO next page
+            details_link = response.urljoin(details_link)
+            request = scrapy.Request(details_link, callback=self.parsed_detailes)
+            request.meta['name-all'] = offer.css('.h3.u-text-break-word::text').extract_first().split(' ', 1)[1]
+            request.meta['price'] = offer.css('.h3.u-block::text').extract_first().split(' ', 1)[0]
             if details_link is not None:
-                details_link = response.urljoin(details_link)
-                yield scrapy.Request(details_link, callback=self.parsed_detailes)
+                yield request
             
             
             

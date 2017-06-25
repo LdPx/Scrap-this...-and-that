@@ -1,0 +1,17 @@
+1) Scrapy in der Shell aufrufen
+scrapy shell "https://www.hs-niederrhein.de/elektrotechnik-informatik/personen/"
+
+2) HTML-Aufbau der Seite besprechen
+
+3) Zeigen wie man an die Personenliste kommt...  (div, Item-Box, response.css)
+response.css("div.tx-iwpersonen-pi1-item-box")
+
+4) Liste in personen - Variable abspeichern
+persons = response.css("div.tx-iwpersonen-pi1-item-box")
+
+5) HTML-Syntax der Mails beschreiben
+
+6) Emails aus der Liste extrahierem
+persons.css("a.font-size-11::text").extract_first()
+bzw.
+persons.css("a.font-size-11::text").extract()

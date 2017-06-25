@@ -53,4 +53,3 @@ class CSpider(scrapy.Spider):
             
             
             
-            

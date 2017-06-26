@@ -35,10 +35,14 @@
 % etwas nach links
 \setlength{\leftmargini}{1em}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \title{Scrapy}
 \subtitle{A Fast and Powerful Scraping and Web Crawling Framework}
 \author{MB, TS, TS}
 \subject{Computer Science}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 
@@ -69,6 +73,8 @@
 	
 	\end{itemize}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Installation}
 % fragile nötig für listings
@@ -266,6 +272,8 @@ scrapy startproject mynewproject
 	\end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Spider}
 \begin{frame}[fragile]
 	\frametitle{\insertsection}
@@ -283,6 +291,8 @@ scrapy startproject mynewproject
 	\end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{frame}[fragile]
 	\frametitle{Spider?}	
 	\begin{figure}
@@ -296,6 +306,8 @@ scrapy startproject mynewproject
 		\label{fig:Spider}
 	\end{figure}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile,allowframebreaks]
 	\frametitle{einfacher Beispielspider}
@@ -323,6 +335,8 @@ class SimpleSpider(scrapy.Spider):
 	
 	\framebreak
 	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
 	\begin{itemize}
 		\item das Crawling mit Spider \lstinline|simplespider| wird über einen eigenen Befehl in der Kommandozeile gestartet:
 			\begin{lstlisting}
@@ -333,6 +347,9 @@ scrapy crawl simplespider -o res.json
 			\item beachte: scrapy leert bei mehrfachem Start des Crawlingbefehls die Datei nicht, sondern hängt die Daten hinten dran
 		\end{itemize}
 		\item Befehl auch über Pythonskript aufrufbar: \begin{lstlisting}
+		
+		\item TODO fix this -> new, main
+		\end{lstlisting}
 def main():
   cmd = 'scrapy crawl iter -o res.json'
   scrapy.cmdline.execute(cmd.split())
@@ -341,6 +358,8 @@ main()
 		\item API zum Crawlen: Fehlanzeige ?
 	\end{itemize}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -368,6 +387,8 @@ def parse(self, response):
 		
 		\framebreak
 		
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 		\item zuletzt extrahiert die Methode die enthaltenen URLs und untersucht sie rekursiv mit \lstinline|response.follow(href, callback=self.parse)| 
 		\item scrapy speichert intern fingerprints von besuchten URLs zur Vermeidung von ``crawling loops'' \begin{itemize}
 			\item Verhalten über \lstinline|DUPEFILTER_CLASS| in Konfigurationsdatei änderbar
@@ -375,10 +396,16 @@ def parse(self, response):
 	\end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Übung}
 
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Blog-Posts}
 \begin{frame}
@@ -386,6 +413,9 @@ def parse(self, response):
 	$\rightarrow$ Texte befreien! und\ldots ja was eigentlich :?
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{Linkcounter}
@@ -410,6 +440,7 @@ def parse(self, response):
 	\end{itemize}
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Fazit}
 \begin{frame}
@@ -421,9 +452,12 @@ def parse(self, response):
 	  \item Async - nicht einfach in Rahmenprogramm einzubetten, nicht dokumentiert
 	  \item Spiderinterface sehr einfach
 	  \item Viel automatisiert - Doppelte links
+	  \item javascript handling? - Nope (- external program ``Splash'')
 	  \item Scrap it all!!!
 	\end{itemize}
 \end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Quellen}
 \begin{frame}

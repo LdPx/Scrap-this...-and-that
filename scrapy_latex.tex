@@ -48,15 +48,26 @@
 	\tableofcontents
 \end{frame}
 \section{Allgemeines}
-\begin{frame}
-	\frametitle{\insertsection}
+\begin{frame}[fragile]
+\frametitle{\insertsection{}: Definition Scaping}
+		Laut Wikipedia:
+		
+		Der Begriff Screen Scraping [..] umfasst
+		generell alle Verfahren zum Auslesen von Texten aus Computerbildschirmen. 
+		Gegenwärtig wird der Ausdruck jedoch beinahe ausschließlich in Bezug auf Webseiten 
+		verwendet [..]. In diesem Fall bezeichnet Screen Scraping speziell die
+		Technologien, die der Gewinnung von Informationen durch gezieltes Extrahieren der benötigten Daten dienen.
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{\insertsection{}: Aha\ldots Und was ist dieses Scrapy?}
 	\begin{itemize}
-		\item  Definition Scraping...
-		\item  Was ist Web-Scraping?
-		\item  Framework für Python
-		\item  Crawlen von Websites
-		\item  Extraktion strukturierter Daten
-	\end{itemize} 
+		\item "`A Fast and Powerful Scraping and Web Crawling Framework"'
+		\item Also ein freies und open-source-Framework für Python, welches
+		web-scraping beherrscht.
+		\item https://scrapy.org/
+	
+	\end{itemize}
 \end{frame}
 
 \section{Installation}
@@ -73,6 +84,169 @@ pip3 install scrapy
 conda install -c conda-forge scrapy
 			\end{lstlisting}
 	\end{itemize}
+\end{frame}
+
+\section{Extraktion von Daten}
+\begin{frame}[fragile,allowframebreaks]
+	\frametitle{\insertsection{}}
+	\begin{lstlisting}[basicstyle=\footnotesize]
+<div class="quote">
+    <span class="text">"The world as we have..."</span>
+    <small class="author">Albert Einstein</small>
+</div>
+<div class="quote">
+    <span class="text">"It is our choices,..."</span>
+    <small class="author">J.K. Rowling</small>
+</div>
+...
+	\end{lstlisting}
+	%\framebreak	
+	\begin{lstlisting}[breaklines=true,basicstyle=\footnotesize]
+def parse(self, resp):
+  res1 = resp.css('div small')
+  #[<Selector data='<small...">'>, <Selector data='<small...">'>, ...]
+  res2 = resp.css('div small::text')
+  #[<Selector data='Albert Einstein'>, <Selector data='J.K. Rowling'>, ...]
+  res3 = resp.css('div small::text').extract()
+  #['Albert Einstein', 'J.K. Rowling', ...]
+  res4 = resp.css('div small::text').extract_first()
+  #Albert Einstein
+	\end{lstlisting}
+	
+
+	
+	\framebreak
+	
+	\begin{itemize}
+		\item \lstinline|resp.css('div small')| selektiert mehrere Elemente im DOM
+		mit dem CSS-Selektor \lstinline|'div small'| (d.h. es findet alle \lstinline|<small>|-Elemente innerhalb von \lstinline|<div>|-Elementen)
+		\item \lstinline|resp.css('div small::text')| selektiert den Text innerhalb jedes gefundenen \lstinline|<small>...</small>|-Tags
+		\item \lstinline|resp.css('div small::text').extract()| liefert die selektierten Texte als Liste von Python-Strings
+		\item \lstinline|resp.css('div small::text').extract_first()| liefert den 1. Treffer davon
+	\end{itemize}
+	
+	\framebreak
+	
+	\begin{itemize}
+		\item das Ergebnis einer Selektion kann selbst wieder zum Selektieren genutzt werden
+		\item folgendes Beispiel selektiert alle Zitate einer Website, und gibt je Zitat als Datensatz Autor und Wortlaut zurück:
+	\begin{lstlisting}
+def parse(self, response):
+  quotes = response.css('div.quote')
+  for q in quotes:
+    yield {
+      'author': q.css('.author::text').extract_first(),
+      'text': q.css('.text::text').extract_first()
+    }
+	\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+\section{Shell}
+\subsection{Vorfühurng: E-mails farmen\ldots}
+\begin{frame}[fragile]
+	\frametitle{\insertsection{}: \insertsubsection{}}
+	\begin{itemize}
+		\item In der ersten Übung wollen wir uns zunächst mit einigen Befehlen von
+		Scrapy in der Shell vertraut machen.
+		\item Die Aufgabe besteht darin die E-mails der HSNR-Dozenten von der
+		offiziellen Homepage zu crawlen.
+		\begin{itemize}
+			\item Dazu müssen wir scrapy zunächst mitteilen, mit welcher Website wir
+			arbeiten wollen: 
+
+			\begin{lstlisting}  
+scrapy shell 'https://www.hs-niederrhein.de/
+elektrotechnik-informatik/personen/'
+			\end{lstlisting}
+			
+			bzw. unter Windows:
+			
+			\begin{lstlisting}  
+scrapy shell "https://www.hs-niederrhein.de/
+elektrotechnik-informatik/personen/"
+			\end{lstlisting}
+						
+
+		\end{itemize}
+	\end{itemize}
+\end{frame}
+
+\framebreak
+
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection{}: \insertsubsection{}}
+	\begin{itemize}
+		\item Anschließend schauen wir uns den HTML-Code der entsprechenden Seite an
+		und überlegen uns, auf welche Elemente wir zugreifen müssen.
+		\item Offensichtlich besteh die Dozentenliste aus einer Reihe von
+		div-Containern in denen die Personendaten enthalten sind. Wir greifen mittels 
+			\begin{lstlisting}  
+response.css("div.tx-iwpersonen-pi1-item-box")
+			\end{lstlisting}
+		auf die entsprechenden Container zu und erhalten eine Liste der div-Elemente
+		als Ausgabe.
+		\item Diese kann natürlich auch in eine Variable gespeichert werden\ldots
+		\begin{lstlisting}  
+persons = response.css(...)
+			\end{lstlisting}
+	\end{itemize}
+\end{frame}
+
+\framebreak
+
+\begin{frame}[fragile]
+	\frametitle{\insertsection{}: \insertsubsection{}}
+	\begin{itemize}
+		\item Um an die E-mail-Adressen zu kommen, müssen wir nun noch einmal in den
+		Quellcode schauen.
+		\item Anscheinend sind die E-Mailadressen als Link mit dem
+		CSS-Klassenselektor "`font-size-11"' hinterlegt.
+		\item \begin{lstlisting}  
+persons.css("a.font-size-11::text").extract()
+			\end{lstlisting}
+			liefert dann eine Liste der E-mailadressen zurück.
+		\item Nun müssen wir nur noch das (at) durch ein @-Zeichen ersetzen und können
+		anschließend die Liste verwenden um liebe Rundmails zu versenden. ;-)
+	\end{itemize}
+\end{frame}
+
+\framebreak
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{texsrc/hacking_xkcd}
+	\end{center}
+	\label{fig:XKCD_HACKING}
+\end{figure}
+
+\begin{frame}[fragile,allowframebreaks]
+	\frametitle{\insertsection{}: \insertsubsection{} Kommandos als Spider}
+
+\begin{lstlisting}  
+import scrapy
+
+class MailSpider(scrapy.Spider):
+  name = "emails"
+  start_urls = [
+    'https://www.hs-niederrhein.de/
+    elektrotechnik-informatik/personen/',
+  ]
+
+  def parse(self, response):
+    persons = response.css(
+      "div.tx-iwpersonen-pi1-item-box")
+
+
+    for person in persons:
+      mail = person.css("a.font-size-11::text")
+        .extract_first();
+      name = person.css(
+        "a.tx-iwpersonen-pi1-detaillink::text").extract_first();
+      mail = mail.replace("(at)", "@")
+      yield{name : mail,}
+      \end{lstlisting}
 \end{frame}
 
 \section{Projekt anlegen}
@@ -168,79 +342,8 @@ main()
 	\end{itemize}
 \end{frame}
 
-\section{Extraktion von Daten}
-\begin{frame}[fragile,allowframebreaks]
-	\frametitle{\insertsection{}}
-	\begin{lstlisting}[basicstyle=\footnotesize]
-<div class="quote">
-    <span class="text">"The world as we have..."</span>
-    <small class="author">Albert Einstein</small>
-</div>
-<div class="quote">
-    <span class="text">"It is our choices,..."</span>
-    <small class="author">J.K. Rowling</small>
-</div>
-...
-	\end{lstlisting}
-	%\framebreak	
-	\begin{lstlisting}[breaklines=true,basicstyle=\footnotesize]
-def parse(self, resp):
-  res1 = resp.css('div small')
-  #[<Selector data='<small...">'>, <Selector data='<small...">'>, ...]
-  res2 = resp.css('div small::text')
-  #[<Selector data='Albert Einstein'>, <Selector data='J.K. Rowling'>, ...]
-  res3 = resp.css('div small::text').extract()
-  #['Albert Einstein', 'J.K. Rowling', ...]
-  res4 = resp.css('div small::text').extract_first()
-  #Albert Einstein
-	\end{lstlisting}
-	
-	\framebreak
-	
-	%\begin{wrapfigure}{\textwidth}
-	%	\begin{center}
-	%		\includegraphics[width=0.6\textwidth]{texsrc/HTML_inspect_A}
-	%	\end{center}
-	%	\vspace{-10pt}
-	%	\caption{Bla Bla Bla Mr. Freeman, Caption.} 
-	%	\label{fig:HTML_Inspect_selection}
-	%\end{wrapfigure}
-	
-	\begin{figure}
-		\begin{center}
-			\includegraphics[width=0.6\textwidth]{texsrc/HTML_inspect_A}
-		\end{center}
-		%\vspace{-10pt}
-		\caption{Bla Bla Bla Mr. Freeman, Caption .} 
-		\label{fig:HTML_Inspect_selection}
-	\end{figure}
-	
-	\framebreak
-	
-	\begin{itemize}
-		\item \lstinline|resp.css('div small')| selektiert mehrere Elemente im DOM
-		mit dem CSS-Selektor \lstinline|'div small'| (d.h. es findet alle \lstinline|<small>|-Elemente innerhalb von \lstinline|<div>|-Elementen)
-		\item \lstinline|resp.css('div small::text')| selektiert den Text innerhalb jedes gefundenen \lstinline|<small>...</small>|-Tags
-		\item \lstinline|resp.css('div small::text').extract()| liefert die selektierten Texte als Liste von Python-Strings
-		\item \lstinline|resp.css('div small::text').extract_first()| liefert den 1. Treffer davon
-	\end{itemize}
-	
-	\framebreak
-	
-	\begin{itemize}
-		\item das Ergebnis einer Selektion kann selbst wieder zum Selektieren genutzt werden
-		\item folgendes Beispiel selektiert alle Zitate einer Website, und gibt je Zitat als Datensatz Autor und Wortlaut zurück:
-	\begin{lstlisting}
-def parse(self, response):
-  quotes = response.css('div.quote')
-  for q in quotes:
-    yield {
-      'author': q.css('.author::text').extract_first(),
-      'text': q.css('.text::text').extract_first()
-    }
-	\end{lstlisting}
-	\end{itemize}
-\end{frame}
+
+
 
 
 
@@ -275,43 +378,7 @@ def parse(self, response):
 
 \section{Übung}
 
-\subsection{Emails farmen\ldots}
-\begin{frame}[fragile]
-	\frametitle{\insertsection{}: \insertsubsection{}}
-	\begin{itemize}
-		\item In der ersten Übung wollen wir uns zunächst mit einigen Befehlen von
-		Scrapy in der Shell vertraut machen.
-		\item Die Aufgabe besteht darin die E-mails der HSNR-Dozenten von der
-		offiziellen Homepage zu crawlen.
-		\begin{itemize}
-			\item Dazu müssen wir scrapy zunächst mitteilen, mit welcher Website wir
-			arbeiten wollen: 
 
-			\begin{lstlisting}  
-scrapy shell 'https://www.hs-niederrhein.de/
-elektrotechnik-informatik/personen/'
-			\end{lstlisting}
-			
-			bzw. unter Windows:
-			
-			\begin{lstlisting}  
-scrapy shell "https://www.hs-niederrhein.de/
-elektrotechnik-informatik/personen/"
-			\end{lstlisting}
-						
-
-		\end{itemize}
-	\end{itemize}
-\end{frame}
-
-\framebreak
-
-\begin{figure}
-	\begin{center}
-		\includegraphics[width=0.6\textwidth]{texsrc/hacking_xkcd}
-	\end{center}
-	\label{fig:XKCD_HACKING}
-\end{figure}
 
 \subsection{Blog-Posts}
 \begin{frame}

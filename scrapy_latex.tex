@@ -310,55 +310,291 @@ scrapy startproject mynewproject
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{frame}[fragile,allowframebreaks]
-	\frametitle{einfacher Beispielspider}
+	\frametitle{Einfache Spider}
 			\begin{lstlisting}
 import scrapy
-
-class SimpleSpider(scrapy.Spider):
-    name = 'simplespider'
-    start_urls = ['http://supersimpleloremipsum.com/']
-
+			
+class Cars(scrapy.Spider):
+    
+    name = 'CarsCrawler'
+    start_urls = ['https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&maxMileage=100&maxPowerAsArray=PS&minPowerAsArray=35&minPowerAsArray=PS&minPrice=5000&scopeId=C&usage=NEW&usageType=PRE_REGISTRATION']
+    
     def parse(self, response):
-        self.logger.info('parsing {}'.format(response))
-        yield {'status': response.status}
-			\end{lstlisting}
+        print('parsing {}'.format(response))
+        yield { ... }
+        	\end{lstlisting}
 			
 	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
 	\begin{itemize}
 		\item \lstinline|name| identifiziert den Spider eindeutig im Projekt
 		\item \lstinline|start_urls| beinhaltet die URLs für die initialen Requests
 		\item \lstinline|parse()| wird als Callback aufgerufen, der Parameter \lstinline|response| enthält das Ergebnis des Response
-		\item die Methode erzeugt eine Logging-Ausgabe von \lstinline|response| 
-		\item die Methode übergibt scrapy das Parsingergebnis den HTTP-Statuscode als \lstinline|dict|
+		\item die Methode gibt mit \lstinline|print(...)| die aufgerufene URL mit
+		\lstinline|response| aus
+		\item zurückgegeben wird das Parsingergebnis als \lstinline|dict|
+		
 	\end{itemize}
 	
 	\framebreak
 	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	
-	\begin{itemize}
-		\item das Crawling mit Spider \lstinline|simplespider| wird über einen eigenen Befehl in der Kommandozeile gestartet:
 			\begin{lstlisting}
-scrapy crawl simplespider -o res.json
+import scrapy
+			
+class Cars(scrapy.Spider):
+    
+    name = 'CarsCrawler'
+    start_urls = ['https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&maxMileage=100&maxPowerAsArray=PS&minPowerAsArray=35&minPowerAsArray=PS&minPrice=5000&scopeId=C&usage=NEW&usageType=PRE_REGISTRATION']
+    
+    def parse(self, response):
+        print('parsing {}'.format(response))
+        yield {
+            'text': response.css('.h3
+                            .u-text-break-word::text')
+                            .extract_first()
+        }
+        	\end{lstlisting}
+			
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{itemize}
+		\item das Crawling mit Spider \lstinline|CarsCrawler| wird über einen eigenen
+		Befehl in der Kommandozeile gestartet:
+			\begin{lstlisting}
+scrapy crawl CarsCrawler -o res.json
 			\end{lstlisting}
-		\item scrapy speichert die per \lstinline|yield| zurückgegebenen Daten in der Datei \lstinline|res.json| (das Dateiformat ergibt sich aus Suffix) \begin{itemize}
+		\item scrapy speichert die per \lstinline|yield| zurückgegebenen Daten in der Datei 
+		\lstinline|res.json| (das Dateiformat ergibt sich aus Suffix) \begin{itemize}
 			\item scrapy unterstützt neben json weitere Formate: xml, csv, ... 
-			\item beachte: scrapy leert bei mehrfachem Start des Crawlingbefehls die Datei nicht, sondern hängt die Daten hinten dran
+			\item beachte: scrapy leert bei mehrfachem Start des Crawlingbefehls die Datei nicht, 
+			sondern hängt die Daten hinten an
 		\end{itemize}
 		\item Befehl auch über Pythonskript aufrufbar: \begin{lstlisting}
-		
-		\item TODO fix this -> new, main
-		\end{lstlisting}
-def main():
-  cmd = 'scrapy crawl iter -o res.json'
+if __name__ == '__main__':
+  cmd = 'scrapy crawl CarsCrawler -o res.json'
   scrapy.cmdline.execute(cmd.split())
 main()		
 		\end{lstlisting}
-		\item API zum Crawlen: Fehlanzeige ?
+		\item API zum Crawlen?
 	\end{itemize}
+	
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+			\begin{lstlisting}
+import scrapy
+			
+class Cars(scrapy.Spider):
+    
+    name = 'CarsCrawler'
+    start_urls = ['https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&maxMileage=100&maxPowerAsArray=PS&minPowerAsArray=35&minPowerAsArray=PS&minPrice=5000&scopeId=C&usage=NEW&usageType=PRE_REGISTRATION']
+    
+    def parse(self, response):
+        print('parsing {}'.format(response))
+        for offer in response.css('.cBox-body
+        		.cBox-body--resultitem
+        		.rbt-reg.rbt-no-top'):
+        	yield { ... }
+        	\end{lstlisting}
+			
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+			\begin{lstlisting}
+class Cars(scrapy.Spider):
+    
+    name = 'CarsCrawler'
+    start_urls = ['https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&maxMileage=100&maxPowerAsArray=PS&minPowerAsArray=35&minPowerAsArray=PS&minPrice=5000&scopeId=C&usage=NEW&usageType=PRE_REGISTRATION']
+    
+    def parse(self, response):
+        print('parsing {}'.format(response))
+        for offer in response.css('.cBox-body
+        		.cBox-body--resultitem
+        		.rbt-reg.rbt-no-top'):
+            yield {
+                'full': offer.css('.h3
+                        .u-text-break-word::text')
+                        .extract_first()
+            }
+        	\end{lstlisting}
+			
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+			\begin{lstlisting}
+yield {
+    'full': offer.css('.h3.u-text-break-word::text')
+                        .extract_first(),
+                        
+    'brand': offer.css('.h3.u-text-break-word::text')
+                        .extract_first().split(' ', 1)[0],
+
+    'car-name': offer.css('.h3.u-text-break-word::text')
+                        .extract_first().split(' ', 2)[1],
+
+    'price': offer.css('.h3.u-block::text')
+                        .extract_first().split(' ', 1)[0]
+}
+        	\end{lstlisting}
+			
+	\framebreak
+	
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+\subsection{Verschachteltes parsen}
+\begin{frame}[fragile,allowframebreaks]
+	\frametitle{\insertsection{}: \insertsubsection{}}
+		\begin{lstlisting}
+import scrapy
+
+class Cars(scrapy.Spider):
+    
+    name = 'CarsCrawler'
+    start_urls = ['https://suchen.mobile.de/fahrzeuge/search.html?damageUnrepaired=NO_DAMAGE_UNREPAIRED&isSearchRequest=true&maxMileage=100&maxPowerAsArray=PS&minPowerAsArray=35&minPowerAsArray=PS&minPrice=5000&scopeId=C&usage=NEW&usageType=PRE_REGISTRATION']
+		
+    def parse(self, response):
+        for offer in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'): 
+
+            ???
+        \end{lstlisting}
+        
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+		\begin{lstlisting}
+def parse_details(self, response):
+    yield {
+    'AC': response.css('#rbt-climatisation-v::text')
+                                    .extract_first()
+    }
+        
+def parse(self, response):
+    for offer in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'): 
+        ???
+
+        \end{lstlisting}
+        
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		\begin{lstlisting}
+def parse_details(self, response):
+    yield {
+    'AC': response.css('#rbt-climatisation-v::text')
+                                    .extract_first()
+    }
+     
+def parse(self, response):
+    for offer in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'): 
+            
+        details_link = offer.css('a::attr(href)')
+                                    .extract_first()
+        request = scrapy.Request(details_link,
+                            callback=self.parsed_detailes)
+            
+        \end{lstlisting}
+        
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+		\begin{lstlisting}
+     
+def parse(self, response):
+    for offer in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'): 
+            
+        details_link = offer.css('a::attr(href)')
+                                    .extract_first()
+        request = scrapy.Request(details_link,
+                            callback=self.parsed_detailes)
+            
+        if details_link is not None:
+            yield request
+            
+        \end{lstlisting}
+        
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+		\begin{lstlisting}
+def parse(self, response):
+    for offer in response.css('.cBox-body.cBox-body--resultitem.rbt-reg.rbt-no-top'): 
+            
+        details_link = offer.css('a::attr(href)')
+                                    .extract_first()
+        request = scrapy.Request(details_link,
+                            callback=self.parsed_detailes)
+
+        request.meta['full'] = offer.css('.h3.u-text-break-word::text').extract_first()
+        request.meta['price'] = offer.css('.h3.u-block::text').extract_first().split(' ', 1)[0].replace('.', '')
+        ...
+        
+        if details_link is not None:
+            yield request
+            
+        \end{lstlisting}
+        
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		\begin{lstlisting}
+def parse_details(self, response):
+    yield {
+    'AC': response.css('#rbt-climatisation-v::text')
+                                    .extract_first()
+    'full':     response.meta['full'],
+    'brand':    response.meta['brand'],
+    'car-name':     response.meta['car-name'],
+    'car-name-all': response.meta['car-name-all'],
+    'price':    response.meta['price']
+    }
+     
+        \end{lstlisting}
+        
+	\framebreak
+	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+		\begin{lstlisting}
+def parse_details(self, response):
+    AC = response.css('#rbt-climatisation-v::text')
+                                    .extract_first()
+    if AC is None or AC.startswith('Keine'):
+        response.meta['AC'] = 'Keine'
+    else:
+        response.meta['AC'] = AC
+        
+    yield {
+        'AC':       response.meta['AC'],
+        'full':     response.meta['full'],
+        'brand':    response.meta['brand'],
+        'name':     response.meta['name'],
+        'name-all': response.meta['name-all'],
+        'price':    response.meta['price'],
+    }
+        \end{lstlisting}
+        
+	\framebreak
+	
+	
 \end{frame}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -398,24 +634,8 @@ def parse(self, response):
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 \section{Übung}
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\subsection{Blog-Posts}
-\begin{frame}
-	\frametitle{\insertsection{}: \insertsubsection{}}	
-	$\rightarrow$ Texte befreien! und\ldots ja was eigentlich :?
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \subsection{Linkcounter}
@@ -446,14 +666,19 @@ def parse(self, response):
 \begin{frame}
 	\frametitle{\insertsection{}}
 	\begin{itemize}
-	  \item Datenzugriff mithilfe von CSS möglich $\rightarrow$ für uns weniger
-	  neues zu lernen
-	  \item Python Framework - BAD $\rightarrow$ kein $R$ - GOOD
-	  \item Async - nicht einfach in Rahmenprogramm einzubetten, nicht dokumentiert
+	  \item Datenzugriff u.a. mithilfe von CSS möglich \begin{itemize} 
+			\item weniger neues zu lernen \end{itemize}
+	  \item Python Framework \begin{itemize} 
+			\item Kann ohne extra portiert zu werden auf anderen Systemen ausgeführt
+			werden \end{itemize}
+	  \item Asynchron \begin{itemize} 
+			\item nicht einfach in Rahmenprogramm einzubetten \end{itemize}
 	  \item Spiderinterface sehr einfach
-	  \item Viel automatisiert - Doppelte links
-	  \item javascript handling? - Nope (- external program ``Splash'')
-	  \item Scrap it all!!!
+	  \item Viel automatisiert \begin{itemize} 
+			\item vermeiden von Link-Dubletten \end{itemize}
+	  \item Keine möglichkeit mit Scrapy direkt javascript zubenutzen
+	  \begin{itemize}
+			\item Benötigt externe Programme (Splash) \end{itemize}
 	\end{itemize}
 \end{frame}
 
